@@ -1,0 +1,38 @@
+version: '3.4'
+
+networks:
+  catalogservice-dev:
+    driver: bridge 
+
+services:
+
+  catalogservice:
+    image: ${DOCKER_REGISTRY-}catalogservice
+    depends_on:
+      - "postgres_image"
+    build:
+      context: .
+      dockerfile: CatalogService/Dockerfile
+    ports:
+        - "27767:80"
+    environment:
+      - PostgresqlConnectionString=User ID=postgres;Password=postgres;Server=postgres_image;Port=5432;Database=SampleCategory;
+    networks:
+      - catalogservice-dev
+
+  postgres_image:
+    image: postgres:latest
+    ports:
+        - "5433:5432"
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=SampleCategory
+    networks:
+      - catalogservice-dev
+
+volumes:
+  db_volume:
