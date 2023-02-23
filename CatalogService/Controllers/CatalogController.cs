@@ -1,6 +1,6 @@
 ﻿using CatalogService.Data;
 using CatalogService.Data.Models;
-using CatalogService.Data.Repositories;
+using CatalogService.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
@@ -12,55 +12,50 @@ namespace CatalogService.Controllers
     public class CatalogController : ControllerBase
     {
         private ICategoryRepository _categoryRepository;
-        public CatalogController(ICategoryRepository categoryRepository)
+        private IProductRepository _productRepository;
+        private ISubCategoryRepository _subCategoryRepository;
+        public CatalogController(ICategoryRepository categoryRepository, IProductRepository productRepository, ISubCategoryRepository subCategoryRepository)
         {
             _categoryRepository = categoryRepository;
+            _productRepository = productRepository;
+            _subCategoryRepository = subCategoryRepository;
         }
-
 
         //Category
         [Route("Category")]
         [HttpGet]
-        public ActionResult<List<Category>> GetAllCategories()
+        public async Task<ActionResult<List<Category>>> GetAllCategories()
         {
-            return _categoryRepository.GetAllCategories();
+            return Ok(await _categoryRepository.ListAllAsync());
         }
 
         [Route("Category/{categoryId}")]
         [HttpGet]
-        public IActionResult GetCategory(int categoryId)
+        public async Task<ActionResult<Category>> GetCategory(int categoryId)
         {
-            return NoContent();
+            return Ok(await _categoryRepository.GetByIdAsync(categoryId));
         }
 
         [Route("Category")]
         [HttpPost]
-        public IActionResult CreateCategory(Category category)
+        public async Task<ActionResult<Category>> CreateCategory(Category category)
         {
-            var categoryCreated = _categoryRepository.AddCategory(category);
-            return CreatedAtAction(nameof(CreateCategory), new { Id = categoryCreated.Id }, categoryCreated);
+            return Ok(await _categoryRepository.AddAsync(category));
         }
 
         [Route("Category")]
         [HttpPut]
-        public IActionResult UpdateCategory( Category category)
+        public async Task<ActionResult> UpdateCategory(Category category)
         {
-            _categoryRepository.UpdateCategory(category);
+            await _categoryRepository.UpdateAsync(category);
             return NoContent();
         }
 
-        //[Route("Category/{categoryId}")]
-        //[HttpPatch]
-        //public IActionResult PatchCategory(int categoryId, Category category)//TODO Key-value
-        //{
-        //    return NoContent();
-        //}
-
         [Route("Category/{categoryId}")]
         [HttpDelete]
-        public IActionResult DeleteCategory(int categoryId)
+        public async Task<ActionResult> DeleteCategory(Category category)
         {
-            _categoryRepository.DeleteCategory(categoryId);
+            await _categoryRepository.DeleteAsync(category);
 
             return NoContent();
         }
@@ -68,89 +63,93 @@ namespace CatalogService.Controllers
         //SubCategory
         [Route("Category/{categoryId}/SubCategory")]
         [HttpGet]
-        public IActionResult GetAllSubCategories(int categoryId)
+        public async Task<ActionResult<List<SubCategory>>> GetAllSubCategories(int categoryId)
         {
-            return NoContent();
+            return Ok(await _subCategoryRepository.GetSubCategoriesAsync(categoryId));//TODO by category
         }
 
         [Route("Category/{categoryId}/SubCategory/{subCategoryId}")]
         [HttpGet]
-        public IActionResult GetSubCategory(int categoryId, int subCategoryId)
+        public async Task<ActionResult<SubCategory>> GetSubCategory(int categoryId, int subCategoryId)
         {
-            return Ok(categoryId);
+            return Ok(await _subCategoryRepository.GetByIdAsync(subCategoryId));
         }
 
         [Route("Category/{categoryId}/SubCategory")]
         [HttpPost]
-        public IActionResult PostSubCategory(int categoryId, SubCategory subCategory)
+        public async Task<ActionResult<SubCategory>> CreateSubCategory(int categoryId, SubCategory subCategory)
         {
-
-            //Add SubCategory to Category Table
-            subCategory.CategoryId = categoryId;
-            return Ok(subCategory);
+            return Ok(await _subCategoryRepository.AddSubCategoryAsync(categoryId, subCategory));
         }
 
-        [Route("Category/{categoryId}/SubCategory/{subCategoryId}")]
+        [Route("Category/{categoryId}/SubCategory")]
         [HttpPut]
-        public IActionResult PutSubCategory(int categoryId, int subCategoryId, SubCategory subCategory)
+        public async Task<ActionResult> UpdateSubCategory(int categoryId, SubCategory subCategory)
         {
+            await _subCategoryRepository.UpdateAsync(subCategory);
+
             return NoContent();
         }
 
-        [Route("Category/{categoryId}/SubCategory/{subCategoryId}")]
-        [HttpPatch]
-        public IActionResult PatchSubCategory(int categoryId, int subCategoryId, SubCategory subCategory)//TODO Key-value
-        {
-            return NoContent();
-        }
+        //[Route("Category/{categoryId}/SubCategory/{subCategoryId}")]
+        //[HttpPatch]
+        //public IActionResult PatchSubCategory(int categoryId, int subCategoryId, SubCategory subCategory)//TODO Key-value
+        //{
+        //    return NoContent();
+        //}
 
         [Route("Category/{categoryId}/SubCategory/{subCategoryId}")]
         [HttpDelete]
-        public IActionResult DeleteSubCategory(int categoryId, int subCategoryId)
+        public async Task<ActionResult> DeleteSubCategory(int categoryId, SubCategory subCategory)
         {
+            await _subCategoryRepository.DeleteAsync(subCategory);
             return NoContent();
         }
 
         //Product
         [Route("Category/{categoryId}/SubCategory/{subCategoryId}/Product")]
         [HttpGet]
-        public IActionResult GetAllProducts(int categoryId, int subCategoryId)
+        public async Task<ActionResult<Product>> GetAllProducts(int categoryId, int subCategoryId)
         {
-            return NoContent();
+            return Ok(await _productRepository.GetProductsAsync(subCategoryId));
         }
 
         [Route("Category/{categoryId}/SubCategory/{subCategoryId}/Product/{productId}")]
         [HttpGet]
-        public IActionResult GetProduct(int categoryId, int subCategoryId, int productId)
+        public async Task<ActionResult<Product>> GetProduct(int categoryId, int subCategoryId, int productId)
         {
-            return NoContent();
+            return Ok(await _productRepository.GetByIdAsync(productId));
         }
 
         [Route("Category/{categoryId}/SubCategory/{subCategoryId}/Product")]
         [HttpPost]
-        public IActionResult PostProduct(int categoryId, int subCategoryId, Product product)
+        public async Task<ActionResult<Product>> CreateProduct(int categoryId, int subCategoryId, Product product)
         {
-            return NoContent();
+            return Ok(await _productRepository.AddProductAsync(subCategoryId, product));
         }
 
         [Route("Category/{categoryId}/SubCategory/{subCategoryId}/Product/{productId}")]
         [HttpPut]
-        public IActionResult PutProduct(int categoryId, int subCategoryId, int productId, Product product)
+        public async Task<ActionResult> UpdateProduct(int categoryId, int subCategoryId, int productId, Product product)
         {
+            await _productRepository.UpdateAsync(product);
+
             return NoContent();
         }
 
-        [Route("Category/{categoryId}/SubCategory/{subCategoryId}/Product/{productId}")]
-        [HttpPatch]
-        public IActionResult PatchProduct(int categoryId, int subCategoryId, int productId, Product product)//TODO Key-value
-        {
-            return NoContent();
-        }
+        //[Route("Category/{categoryId}/SubCategory/{subCategoryId}/Product/{productId}")]
+        //[HttpPatch]
+        //public IActionResult PatchProduct(int categoryId, int subCategoryId, int productId, Product product)//TODO Key-value
+        //{
+        //    return NoContent();
+        //}
 
         [Route("Category/{categoryId}/SubCategory/{subCategoryId}/Product/{productId}")]
         [HttpDelete]
-        public IActionResult DeleteProduct(int categoryId, int subCategoryId, int productId)
+        public async Task<ActionResult> DeleteProduct(int categoryId, int subCategoryId, Product product)
         {
+            await _productRepository.DeleteAsync(product);
+
             return NoContent();
         }
 

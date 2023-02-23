@@ -17,6 +17,12 @@ namespace CatalogService.Data
         {
             builder.Entity<Category>()
               .HasKey(category => new { category.Id });
+
+            builder.Entity<SubCategory>()
+              .HasKey(subCategory => new { subCategory.Id });
+
+            builder.Entity<Product>()
+              .HasKey(product => new { product.Id });
         }
     }
 }

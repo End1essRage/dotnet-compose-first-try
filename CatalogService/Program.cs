@@ -1,5 +1,6 @@
 using CatalogService.Data;
-using CatalogService.Data.Repositories;
+using CatalogService.Data.Repositories.Classes;
+using CatalogService.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -8,11 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = Environment.GetEnvironmentVariable("PostgresqlConnectionString");
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-//builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddNpgsql<DataContext>(connectionString);
-builder.Services.AddScoped<ICategoryRepository, PostgresCategoryRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddControllers();
 
