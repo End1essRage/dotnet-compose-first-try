@@ -1,6 +1,6 @@
 ﻿using CatalogService.Data;
-using CatalogService.Data.Models;
-using CatalogService.Data.Repositories.Interfaces;
+using CatalogService.Data.Entities;
+using CatalogService.Data.DataAccess.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
@@ -65,7 +65,7 @@ namespace CatalogService.Controllers
         [HttpGet]
         public async Task<ActionResult<List<SubCategory>>> GetAllSubCategories(int categoryId)
         {
-            return Ok(await _subCategoryRepository.GetSubCategoriesAsync(categoryId));//TODO by category
+            return Ok(await _subCategoryRepository.GetSubCategoriesAsync(categoryId));
         }
 
         [Route("Category/{categoryId}/SubCategory/{subCategoryId}")]

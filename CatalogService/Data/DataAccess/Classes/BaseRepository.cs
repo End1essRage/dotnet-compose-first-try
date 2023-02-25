@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using CatalogService.Data.Repositories.Interfaces;
+using CatalogService.Data.DataAccess.Interfaces;
 
-namespace CatalogService.Data.Repositories.Classes
+namespace CatalogService.Data.DataAccess.Classes
 {
     public class BaseRepository<T> : IAsyncRepository<T> where T : class
     {

@@ -1,8 +1,9 @@
-﻿using CatalogService.Data.Models;
-using CatalogService.Data.Repositories.Interfaces;
+﻿using CatalogService.Data.DataAccess;
+using CatalogService.Data.Entities;
+using CatalogService.Data.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace CatalogService.Data.Repositories.Classes
+namespace CatalogService.Data.DataAccess.Classes
 {
     public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
@@ -25,6 +26,11 @@ namespace CatalogService.Data.Repositories.Classes
         public async Task<List<Product>> GetProductsAsync(int subCategoryId)
         {
             return await _products.Where(s => s.SubCategoryId == subCategoryId).ToListAsync();
+        }
+
+        public async Task<List<Product>> GetProductsByListIdsAsync(List<int> productIds)
+        {
+            return await _products.Where(s => productIds.Contains(s.Id)).ToListAsync();
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CatalogService.Data.Models
+namespace CatalogService.Data.Entities
 {
-    public class ModelBase
+    public class EntityBase
     {
         [Column("_id")]
         public int Id { get; set; }

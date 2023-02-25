@@ -1,4 +1,4 @@
-﻿namespace CatalogService.Data.Repositories.Interfaces
+﻿namespace CatalogService.Data.DataAccess.Interfaces
 {
     public interface IAsyncRepository<T> where T : class
     {

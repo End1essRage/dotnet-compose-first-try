@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CatalogService.Data.Models
+namespace CatalogService.Data.Entities
 {
     [Table("subcategories")]
-    public class SubCategory : ModelBase
+    public class SubCategory : EntityBase
     {
         [Column("name")]
         public string Name { get; set; }

@@ -1,6 +1,6 @@
-﻿using CatalogService.Data.Models;
+﻿using CatalogService.Data.Entities;
 
-namespace CatalogService.Data.Repositories.Interfaces
+namespace CatalogService.Data.DataAccess.Interfaces
 {
     public interface ISubCategoryRepository : IAsyncRepository<SubCategory>
     {

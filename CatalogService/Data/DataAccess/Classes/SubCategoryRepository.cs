@@ -1,8 +1,9 @@
-﻿using CatalogService.Data.Models;
-using CatalogService.Data.Repositories.Interfaces;
+﻿using CatalogService.Data.Entities;
+using CatalogService.Data.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using CatalogService.Data.DataAccess;
 
-namespace CatalogService.Data.Repositories.Classes
+namespace CatalogService.Data.DataAccess.Classes
 {
     public class SubCategoryRepository : BaseRepository<SubCategory>, ISubCategoryRepository
     {

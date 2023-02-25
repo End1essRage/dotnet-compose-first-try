@@ -1,9 +1,10 @@
-﻿using CatalogService.Data.Models;
-using CatalogService.Data.Repositories.Interfaces;
+﻿using CatalogService.Data.DataAccess;
+using CatalogService.Data.Entities;
+using CatalogService.Data.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 
-namespace CatalogService.Data.Repositories.Classes
+namespace CatalogService.Data.DataAccess.Classes
 {
     public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {

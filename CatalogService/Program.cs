@@ -1,6 +1,6 @@
-using CatalogService.Data;
-using CatalogService.Data.Repositories.Classes;
-using CatalogService.Data.Repositories.Interfaces;
+using CatalogService.Data.DataAccess;
+using CatalogService.Data.DataAccess.Classes;
+using CatalogService.Data.DataAccess.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;

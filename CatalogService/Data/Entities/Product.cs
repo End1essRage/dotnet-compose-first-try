@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CatalogService.Data.Models
+namespace CatalogService.Data.Entities
 {
     [Table("products")]
-    public class Product : ModelBase
+    public class Product : EntityBase
     {
         [Column("name")]
         public string Name { get; set; }
