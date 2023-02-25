@@ -2,25 +2,25 @@ version: '3.4'
 
 networks:
   catalogservice-dev:
-    driver: bridge 
+    driver: bridge
 
 services:
 
   catalogservice:
     image: ${DOCKER_REGISTRY-}catalogservice
     depends_on:
-      - "postgres_image"
+      - "postgres"
     build:
       context: .
       dockerfile: CatalogService/Dockerfile
     ports:
-        - "27767:80"
+        - "8080:80"
     environment:
-      - PostgresqlConnectionString=User ID=postgres;Password=postgres;Server=postgres_image;Port=5432;Database=SampleCategory;
+      - PostgresqlConnectionString=User ID=postgres;Password=postgres;Server=postgres;Port=5432;Database=SampleCategory;
     networks:
       - catalogservice-dev
 
-  postgres_image:
+  postgres:
     image: postgres:latest
     ports:
         - "5433:5432"
@@ -34,5 +34,34 @@ services:
     networks:
       - catalogservice-dev
 
+  cartservice:
+     image: ${DOCKER_REGISTRY-}cartservice
+     depends_on:
+      - "mongo"
+      - "catalogservice"
+     build:
+       context: .
+       dockerfile: CartService/Dockerfile
+     ports:
+         - "8081:80"
+     environment:
+       - MongoDbConnectionString=mongodb://root:example@mongo:27017/
+     networks:
+       - catalogservice-dev
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - db_volume:/var/lib/mongodb/data
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - catalogservice-dev
+
 volumes:
   db_volume:
+
