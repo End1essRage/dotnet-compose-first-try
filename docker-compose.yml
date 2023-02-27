@@ -6,6 +6,32 @@ networks:
 
 services:
 
+  cartservice:
+     image: ${DOCKER_REGISTRY-}cartservice
+     depends_on:
+      - "mongo"
+      - "catalogservice"
+     build:
+       context: .
+       dockerfile: CartService/Dockerfile
+     ports:
+         - "8081:80"
+     environment:
+       - MongoDbConnectionString=mongodb://root:example@mongo:27017/
+     networks:
+       - catalogservice-dev
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - db_volume:/var/lib/mongodb/data
+    networks:
+      - catalogservice-dev
+
+
   catalogservice:
     image: ${DOCKER_REGISTRY-}catalogservice
     depends_on:
@@ -34,33 +60,6 @@ services:
     networks:
       - catalogservice-dev
 
-  cartservice:
-     image: ${DOCKER_REGISTRY-}cartservice
-     depends_on:
-      - "mongo"
-      - "catalogservice"
-     build:
-       context: .
-       dockerfile: CartService/Dockerfile
-     ports:
-         - "8081:80"
-     environment:
-       - MongoDbConnectionString=mongodb://root:example@mongo:27017/
-     networks:
-       - catalogservice-dev
-
-  mongo:
-    image: mongo
-    restart: always
-    ports:
-      - 27017:27017
-    volumes:
-      - db_volume:/var/lib/mongodb/data
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    networks:
-      - catalogservice-dev
 
 volumes:
   db_volume:

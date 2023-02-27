@@ -11,5 +11,10 @@ namespace CartService.Data.Models
         public string Id { get; set; }
         public string UserOwner { get; set; }
         public List<Position> Positions { get; set; }
+        public Cart(string userOwner) 
+        { 
+            this.UserOwner = userOwner;
+            this.Positions = new List<Position>();
+        }
     }
 }
