@@ -6,7 +6,7 @@ namespace CartService.Data
 {
     public class CartRepository : ICartRepository
     {
-        private string connectionString = "mongodb://root:example@mongo:27017/";
+        private string connectionString = "mongodb://mongo:27017/";
         private const string dbName = "cartDb";
         private const string collectionName = "carts";
         private IMongoCollection<T> ConnectToMongo<T>(in string collection)
@@ -33,15 +33,12 @@ namespace CartService.Data
         public async Task AddProductToCart(string userName, Product product)
         {
             var cart = await GetCartByUserAsync(userName);
-            //if(cart.Positions.FirstOrDefault(p => p.Product.Id == product.Id) == null)
-            //{
             var newPosition = new Position(product);
             if(cart.Positions == null)
             {
                 cart.Positions = new List<Position>();
             }
             cart.Positions.Add(newPosition);
-            //}
             await ConnectToMongo<Cart>(collectionName).ReplaceOneAsync(c => c.Id == cart.Id, cart);
             return;
         }

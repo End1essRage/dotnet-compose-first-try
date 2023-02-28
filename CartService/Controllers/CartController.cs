@@ -21,43 +21,47 @@ namespace CartService.Controllers
 
         [Route("{UserName}")]
         [HttpPut]
-        public async Task<Cart> CreateNewCart(string UserName)
-        {
-            return await _cartRepository.CreateCart(UserName);
+        //TODO from authentication or first adding product
+        public async Task<ActionResult<Cart>> CreateNewCart(string UserName)
+        {   
+            return Ok(await _cartRepository.CreateCart(UserName));
         }
 
         //ToDo refactor
         [Route("{UserName}")]
         [HttpGet]
-        public async Task<Cart> GetCartByUser(string UserName)
+        public async Task<ActionResult<Cart>> GetCartByUser(string UserName)
         {
-            if (await _cartRepository.GetCartByUserAsync(UserName) == null)
+            var cart = await _cartRepository.GetCartByUserAsync(UserName);
+            if(cart == null)
             {
-                return await _cartRepository.CreateCart(UserName);
+                return NotFound();
             }
-
-            return await _cartRepository.GetCartByUserAsync(UserName);
+            return Ok(cart);
         }
 
         [Route("{UserName}")]
         [HttpPatch]
-        public async Task AddProductToCart(string userName, Product product)
+        public async Task<ActionResult> AddProductToCart(string userName, Product product)
         {
             await _cartRepository.AddProductToCart(userName, product);
+            return Ok();
         }
 
         [Route("{UserName}/clear")]
         [HttpPatch]
-        public async Task ClearCart(string UserName, int productId)
+        public async Task<ActionResult> ClearCart(string UserName, int productId)
         {
             await _cartRepository.ClearCart(UserName);
+            return Ok();
         }
 
         [Route("{UserName}/add/{productId}")]
         [HttpPatch]
-        public async Task<bool> ChangeProductsAmountInCart(string UserName, int productId, int amount)
+        public async Task<ActionResult> ChangeProductsAmountInCart(string UserName, int productId, int amount)
         {
-            return await _cartRepository.ChangeProductsAmountInCart(UserName, productId, amount);
+            bool isChanged = await _cartRepository.ChangeProductsAmountInCart(UserName, productId, amount);
+            return isChanged ? Ok() : BadRequest();
         }
     }
 }
