@@ -1,36 +1,10 @@
 version: '3.4'
 
 networks:
-  catalogservice-dev:
+  retail-dev:
     driver: bridge
 
 services:
-
-  cartservice:
-     image: ${DOCKER_REGISTRY-}cartservice
-     depends_on:
-      - "mongo"
-      - "catalogservice"
-     build:
-       context: .
-       dockerfile: CartService/Dockerfile
-     ports:
-         - "8081:80"
-     environment:
-       - MongoDbConnectionString=mongodb://root:example@mongo:27017/
-     networks:
-       - catalogservice-dev
-
-  mongo:
-    image: mongo
-    restart: always
-    ports:
-      - 27017:27017
-    volumes:
-      - db_volume:/var/lib/mongodb/data
-    networks:
-      - catalogservice-dev
-
 
   catalogservice:
     image: ${DOCKER_REGISTRY-}catalogservice
@@ -44,7 +18,48 @@ services:
     environment:
       - PostgresqlConnectionString=User ID=postgres;Password=postgres;Server=postgres;Port=5432;Database=SampleCategory;
     networks:
-      - catalogservice-dev
+      - retail-dev
+
+
+  cartservice:
+     image: ${DOCKER_REGISTRY-}cartservice
+     depends_on:
+      - "mongo"
+     build:
+       context: .
+       dockerfile: CartService/Dockerfile
+     ports:
+         - "8081:80"
+     environment:
+       - MongoDbConnectionString=mongodb://mongo:27017/
+     networks:
+       - retail-dev
+
+
+  orderservice:
+    image: ${DOCKER_REGISTRY-}orderservice
+    depends_on:
+      - "mongo"
+    build:
+      context: .
+      dockerfile: OrderService/Dockerfile
+    ports:
+        - "8082:80"
+    environment:
+      - MongoDbConnectionString=mongodb://mongo:27017/
+    networks:
+      - retail-dev
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - db_volume:/var/lib/mongodb/data
+    networks:
+      - retail-dev
+
 
   postgres:
     image: postgres:latest
@@ -58,7 +73,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=SampleCategory
     networks:
-      - catalogservice-dev
+      - retail-dev
 
 
 volumes:
