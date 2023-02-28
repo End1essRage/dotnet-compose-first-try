@@ -5,6 +5,6 @@ namespace CatalogService.Data.Entities
     public class EntityBase
     {
         [Column("_id")]
-        public int Id { get; set; }
+        public int Id { get; }
     }
 }
