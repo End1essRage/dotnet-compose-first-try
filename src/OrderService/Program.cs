@@ -1,3 +1,4 @@
+using OrderService.Communication.Sender;
 using OrderService.Data;
 
 namespace OrderService
@@ -10,7 +11,7 @@ namespace OrderService
 
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderWorker, OrderWorker>();
-
+            builder.Services.AddSingleton<IOrderSender, OrderSender>();
             // Add services to the container.
 
             builder.Services.AddControllers();

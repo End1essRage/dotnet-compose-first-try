@@ -3,6 +3,8 @@ version: '3.4'
 networks:
   retail-dev:
     driver: bridge
+  rabbitmq_net:
+    driver: bridge
 
 services:
 
@@ -14,11 +16,12 @@ services:
       context: .
       dockerfile: CatalogService/Dockerfile
     ports:
-        - "8080:80"
+         - "8080:80"
     environment:
       - PostgresqlConnectionString=User ID=postgres;Password=postgres;Server=postgres;Port=5432;Database=SampleCategory;
     networks:
       - retail-dev
+      - rabbitmq_net
 
 
   cartservice:
@@ -34,6 +37,7 @@ services:
        - MongoDbConnectionString=mongodb://mongo:27017/
      networks:
        - retail-dev
+       - rabbitmq_net
 
 
   orderservice:
@@ -49,6 +53,22 @@ services:
       - MongoDbConnectionString=mongodb://mongo:27017/
     networks:
       - retail-dev
+      - rabbitmq_net
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/mnesia
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    networks:
+        - rabbitmq_net
 
   mongo:
     image: mongo
