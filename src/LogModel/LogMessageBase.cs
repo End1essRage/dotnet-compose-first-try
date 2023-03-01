@@ -13,5 +13,7 @@ namespace LogModel
         public string? ServiceName { get; set; }
 
         public string tag { get; set; }
+
+        public DateTime dateTime { get; set; }
     }
 }

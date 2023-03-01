@@ -1,6 +1,6 @@
 ﻿using OrderService.Data.Models;
 
-namespace OrderService.Data
+namespace OrderService.Logic
 {
     public interface IOrderWorker
     {

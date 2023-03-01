@@ -9,21 +9,16 @@ namespace LogModel
         {
 
         }
+
         public LogMessageControllers(string message)
         {
             this.Message = message;
             this.tag = LogMessageTag.other;
         }
-        public LogMessageControllers(string message, string serviceName)
+
+        public LogMessageControllers(string message, string tag) 
         {
             this.Message = message;
-            this.ServiceName = serviceName;
-            this.tag = LogMessageTag.other;
-        }
-        public LogMessageControllers(string message, string serviceName, string tag) 
-        {
-            this.Message = message;
-            this.ServiceName = serviceName;
             this.tag = tag;      
         }
     }

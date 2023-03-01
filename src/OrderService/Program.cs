@@ -1,5 +1,7 @@
+using LogModel;
 using OrderService.Communication.Sender;
 using OrderService.Data;
+using OrderService.Logic;
 
 namespace OrderService
 {
@@ -11,8 +13,7 @@ namespace OrderService
 
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderWorker, OrderWorker>();
-            builder.Services.AddSingleton<IOrderSender, OrderSender>();
-            builder.Services.AddSingleton<LogSender>();
+            builder.Services.AddSingleton<ILogSender, LogOrderSender>();
             // Add services to the container.
 
             builder.Services.AddControllers();

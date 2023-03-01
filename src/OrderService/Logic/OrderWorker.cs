@@ -1,16 +1,15 @@
 ﻿using OrderService.Communication.Sender;
+using OrderService.Data;
 using OrderService.Data.Models;
 
-namespace OrderService.Data
+namespace OrderService.Logic
 {
     public class OrderWorker : IOrderWorker
     {
         private IOrderRepository _repository;
-        private IOrderSender _sender;
-        public OrderWorker(IOrderRepository repository, IOrderSender sender)
+        public OrderWorker(IOrderRepository repository)
         {
             _repository = repository;
-            _sender = sender;
         }
 
         public async Task<Order> CreateOrder(string userOwner)
@@ -25,13 +24,10 @@ namespace OrderService.Data
             };
 
             List<Tuple<int, int>> message = new List<Tuple<int, int>>();
-            foreach(var position in Positions)
+            foreach (var position in Positions)
             {
                 message.Add(new Tuple<int, int>(position.Product.Id, position.Amount));
             }
-
-            //send message to catalog service
-            _sender.SendOrderPositionsInfo(message);
 
             return await _repository.CreateNewOrder(userOwner, Positions);
         }

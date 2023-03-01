@@ -1,24 +1,22 @@
-﻿using Microsoft.Extensions.Options;
-using MongoDB.Driver.Core.Connections;
+﻿using LogModel;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using OrderService.Communication.Options;
-using OrderService.Data.Models;
 using RabbitMQ.Client;
 using System.Text;
 
 namespace OrderService.Communication.Sender
 {
-    public class OrderSender : IOrderSender
+    public class LogOrderSender : ILogSender
     {
         private readonly string _hostname;
         private readonly string _password;
         private readonly string _queueName;
         private readonly string _username;
-        private RabbitMQ.Client.IConnection _connection;
+        private IConnection _connection;
 
-        public OrderSender(IOptions<RabbitMqConfiguration> rabbitMqOptions)
+        public LogOrderSender()
         {
-            _queueName = "OrdersQueue";
+            _queueName = "logs_que";
             _hostname = "rabbitmq";
             _username = "user";
             _password = "password";
@@ -26,18 +24,27 @@ namespace OrderService.Communication.Sender
             CreateConnection();
         }
 
-        public void SendOrderPositionsInfo(List<Tuple<int, int>> positions)
+        private LogMessageControllers FormatMessage(LogMessageControllers message)
         {
+            message.ServiceName = "OrderService";
+            message.dateTime = DateTime.Now.AddHours(3);
+            return message;
+        }
+
+        public void SendMessage(LogMessageControllers message)
+        {
+            FormatMessage(message);
             if (ConnectionExists())
             {
                 using (var channel = _connection.CreateModel())
                 {
+                    channel.ExchangeDeclare(exchange: "retailstore_logs", type: ExchangeType.Direct);
                     channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                    var json = JsonConvert.SerializeObject(positions);
+                    var json = JsonConvert.SerializeObject(message);
                     var body = Encoding.UTF8.GetBytes(json);
 
-                    channel.BasicPublish(exchange: "", routingKey: _queueName, basicProperties: null, body: body);
+                    channel.BasicPublish(exchange: "retailstore_logs", routingKey: "test", basicProperties: null, body: body);
                 }
             }
         }

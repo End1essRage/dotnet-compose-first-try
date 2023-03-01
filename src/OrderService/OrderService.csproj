@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Communication\Options\" />
     <Folder Include="Communication\Receiver\" />
   </ItemGroup>
 

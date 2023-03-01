@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderService.Communication.Sender;
-using OrderService.Data;
 using OrderService.Data.Models;
+using OrderService.Logic;
 
 namespace OrderService.Controllers
 {
@@ -13,8 +13,8 @@ namespace OrderService.Controllers
     {
         //private IOrderRepository _orderRepository;
         private IOrderWorker _orderWorker;
-        private LogSender _logger;
-        public OrderController (IOrderWorker orderWorker, LogSender logger)
+        private ILogSender _logger;
+        public OrderController (IOrderWorker orderWorker, ILogSender logger)
         {
             _orderWorker = orderWorker;
             _logger = logger;
@@ -29,7 +29,7 @@ namespace OrderService.Controllers
         [HttpGet]
         public async Task<ActionResult<Order>> GetOrder(string userOwner)
         {
-            _logger.SendMessage(new LogMessageControllers("test message"));
+            _logger.SendMessage(new LogMessageControllers("test message", LogMessageTag.runtime));
             return Ok(await _orderWorker.GetOrder(userOwner));
         }
     }
