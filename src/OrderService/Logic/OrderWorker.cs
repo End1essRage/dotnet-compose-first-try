@@ -1,6 +1,8 @@
-﻿using OrderService.Data.Models;
+﻿using OrderService.Communication.Sender;
+using OrderService.Data;
+using OrderService.Data.Models;
 
-namespace OrderService.Data
+namespace OrderService.Logic
 {
     public class OrderWorker : IOrderWorker
     {
@@ -20,7 +22,13 @@ namespace OrderService.Data
                 new Position(firstTestProduct, 3),
                 new Position(secondTestProduct, 2)
             };
-            //send message to catalog service
+
+            List<Tuple<int, int>> message = new List<Tuple<int, int>>();
+            foreach (var position in Positions)
+            {
+                message.Add(new Tuple<int, int>(position.Product.Id, position.Amount));
+            }
+
             return await _repository.CreateNewOrder(userOwner, Positions);
         }
 

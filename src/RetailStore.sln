@@ -11,7 +11,11 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartService", "CartService\CartService.csproj", "{5BB49BDF-52A6-40A3-B5BF-3C0804AA2B19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService", "OrderService\OrderService.csproj", "{6D39B1FE-0B4A-45F9-83C8-63DDD3EE0699}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderService", "OrderService\OrderService.csproj", "{6D39B1FE-0B4A-45F9-83C8-63DDD3EE0699}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogService", "LogService\LogService.csproj", "{62F0042D-41F2-47F4-81C6-B31ED42026BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogModel", "LogModel\LogModel.csproj", "{21D4A992-7375-47E8-83E8-1C38F1F9F6A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{6D39B1FE-0B4A-45F9-83C8-63DDD3EE0699}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D39B1FE-0B4A-45F9-83C8-63DDD3EE0699}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D39B1FE-0B4A-45F9-83C8-63DDD3EE0699}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62F0042D-41F2-47F4-81C6-B31ED42026BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62F0042D-41F2-47F4-81C6-B31ED42026BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62F0042D-41F2-47F4-81C6-B31ED42026BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62F0042D-41F2-47F4-81C6-B31ED42026BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21D4A992-7375-47E8-83E8-1C38F1F9F6A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21D4A992-7375-47E8-83E8-1C38F1F9F6A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21D4A992-7375-47E8-83E8-1C38F1F9F6A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21D4A992-7375-47E8-83E8-1C38F1F9F6A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
