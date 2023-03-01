@@ -1,7 +1,6 @@
-using OrderService.Communication.Sender;
-using OrderService.Data;
+using LogService.Communication;
 
-namespace OrderService
+namespace LogService
 {
     public class Program
     {
@@ -9,16 +8,14 @@ namespace OrderService
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-            builder.Services.AddScoped<IOrderWorker, OrderWorker>();
-            builder.Services.AddSingleton<IOrderSender, OrderSender>();
-            builder.Services.AddSingleton<LogSender>();
             // Add services to the container.
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddHostedService<RmqReceiver>();
 
             var app = builder.Build();
 

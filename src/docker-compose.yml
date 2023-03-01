@@ -39,7 +39,6 @@ services:
        - retail-dev
        - rabbitmq_net
 
-
   orderservice:
     image: ${DOCKER_REGISTRY-}orderservice
     depends_on:
@@ -51,6 +50,19 @@ services:
         - "8082:80"
     environment:
       - MongoDbConnectionString=mongodb://mongo:27017/
+    networks:
+      - retail-dev
+      - rabbitmq_net
+
+  logservice:
+    image: ${DOCKER_REGISTRY-}logservice
+    depends_on:
+      - "mongo"
+    build:
+      context: .
+      dockerfile: LogService/Dockerfile
+    ports:
+         - "8083:80"
     networks:
       - retail-dev
       - rabbitmq_net
