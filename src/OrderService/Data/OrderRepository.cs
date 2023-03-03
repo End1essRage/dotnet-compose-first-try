@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using OrderService.Data.Models;
 
 namespace OrderService.Data
@@ -21,7 +22,13 @@ namespace OrderService.Data
 
         public async Task<Order> CreateNewOrder(string userOwner, List<Position> positions)
         {
-            var order = new Order(userOwner, positions);
+            int lastOrderNumber = 0;
+            if (ConnectToMongo<Order>(collectionName).Count(o => o.Id != null) > 0)
+            {
+                lastOrderNumber = await ConnectToMongo<Order>(collectionName).Find(new BsonDocument()).Project(c => c.OrderNumber).SortByDescending(c => c.OrderNumber).FirstAsync();
+            }
+            
+            var order = new Order(userOwner, ++lastOrderNumber,  positions);
             await ConnectToMongo<Order>(collectionName).InsertOneAsync(order);
             return order;
         }

@@ -29,7 +29,7 @@ namespace OrderService.Controllers
         [HttpGet]
         public async Task<ActionResult<Order>> GetOrder(string userOwner)
         {
-            _logger.SendMessage(new LogMessageControllers("test message", LogMessageTag.runtime));
+            _logger.SendMessage(new LogMessage("test message 1", LogMessageTag.runtime));
             return Ok(await _orderWorker.GetOrder(userOwner));
         }
     }

@@ -1,12 +1,11 @@
-﻿using LogModel;
-using Microsoft.Extensions.Options;
+﻿using CommunicationModel.ProductManagementRequest;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
 
 namespace OrderService.Communication.Sender
 {
-    public class LogOrderSender : ILogSender
+    public class RmqSender
     {
         private readonly string _hostname;
         private readonly string _password;
@@ -14,9 +13,9 @@ namespace OrderService.Communication.Sender
         private readonly string _username;
         private IConnection _connection;
 
-        public LogOrderSender()
+        public RmqSender()
         {
-            _queueName = "logs_que";
+            _queueName = "orders_que";
             _hostname = "rabbitmq";
             _username = "user";
             _password = "password";
@@ -24,27 +23,19 @@ namespace OrderService.Communication.Sender
             CreateConnection();
         }
 
-        private LogMessage FormatMessage(LogMessage message)
+        public void SendMessage(WriteOffRequest message)
         {
-            message.ServiceName = "OrderService";
-            message.dateTime = DateTime.Now.AddHours(3);
-            return message;
-        }
-
-        public void SendMessage(LogMessage message)
-        {
-            FormatMessage(message);
             if (ConnectionExists())
             {
                 using (var channel = _connection.CreateModel())
                 {
-                    channel.ExchangeDeclare(exchange: "retailstore_logs", type: ExchangeType.Direct);
+                    channel.ExchangeDeclare(exchange: "retailstore_productmanagement", type: ExchangeType.Direct);
                     channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
                     var json = JsonConvert.SerializeObject(message);
                     var body = Encoding.UTF8.GetBytes(json);
 
-                    channel.BasicPublish(exchange: "retailstore_logs", routingKey: "test", basicProperties: null, body: body);
+                    channel.BasicPublish(exchange: "retailstore_productmanagement", routingKey: "request", basicProperties: null, body: body);
                 }
             }
         }

@@ -1,9 +1,12 @@
+using ProductManagementService.Data.DataAccess;
+using Npgsql;
+using Microsoft.Extensions.DependencyInjection;
+using ProductManagementService.Communication;
+using ProductManagementService.Services;
 using LogModel;
-using OrderService.Communication.Sender;
-using OrderService.Data;
-using OrderService.Logic;
+using ProductManagementService.Communication;
 
-namespace OrderService
+namespace ProductManagementService
 {
     public class Program
     {
@@ -11,16 +14,19 @@ namespace OrderService
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-            builder.Services.AddScoped<IOrderWorker, OrderWorker>();
-            builder.Services.AddSingleton<ILogSender, LogOrderSender>();
-            builder.Services.AddSingleton<RmqSender>();
-            // Add services to the container.
+            //var connectionString = 
 
+            // Add services to the container.
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<RequestWorker>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddSingleton<RmqSender>();
+            builder.Services.AddHostedService<RmqReceiver>();
+            builder.Services.AddSingleton<ILogSender, LogProductManagementSender>();
 
             var app = builder.Build();
 

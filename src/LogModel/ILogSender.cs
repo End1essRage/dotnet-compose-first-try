@@ -8,6 +8,6 @@ namespace LogModel
 {
     public interface ILogSender
     {
-        public void SendMessage(LogMessageControllers message);
+        public void SendMessage(LogMessage message);
     }
 }

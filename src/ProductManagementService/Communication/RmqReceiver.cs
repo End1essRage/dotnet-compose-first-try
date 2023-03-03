@@ -1,17 +1,12 @@
-﻿using Microsoft.AspNetCore.Connections;
-using Microsoft.Extensions.Options;
+﻿using CommunicationModel.ProductManagementRequest;
+using Microsoft.AspNetCore.Connections;
+using Newtonsoft.Json;
+using ProductManagementService.Services;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Data.Common;
 using System.Text;
-using System.Threading.Channels;
-using Newtonsoft.Json;
-using LogModel;
-using LogService.Services;
-using MongoDB.Driver.Core.Bindings;
-using System.ComponentModel;
 
-namespace LogService.Communication
+namespace ProductManagementService.Communication
 {
     public class RmqReceiver : BackgroundService
     {
@@ -21,14 +16,15 @@ namespace LogService.Communication
         private readonly string _queueName;
         private readonly string _username;
         private readonly string _password;
-        private LogWriter _writer = new LogWriter();
+        private RequestWorker _worker;
 
-        public RmqReceiver()
+        public RmqReceiver(RequestWorker worker)
         {
-            _queueName = "logs_que";
+            _queueName = "orders_que";
             _hostname = "rabbitmq";
             _username = "user";
             _password = "password";
+            _worker = worker;
             InitializeRabbitMqListener();
         }
         private void InitializeRabbitMqListener()
@@ -44,9 +40,9 @@ namespace LogService.Communication
             _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
 
             _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(exchange: "retailstore_logs", type: ExchangeType.Direct);
+            _channel.ExchangeDeclare(exchange: "retailstore_productmanagement", type: ExchangeType.Direct);
             _channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
-            _channel.QueueBind(_queueName, exchange: "retailstore_logs", routingKey: "test");
+            _channel.QueueBind(_queueName, exchange: "retailstore_productmanagement", routingKey: "request");
         }
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -56,7 +52,7 @@ namespace LogService.Communication
             consumer.Received += (ch, ea) =>
             {
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
-                var message = JsonConvert.DeserializeObject<LogMessage>(content);
+                var message = JsonConvert.DeserializeObject<WriteOffRequest>(content);
 
                 HandleMessage(message);
 
@@ -73,10 +69,9 @@ namespace LogService.Communication
         }
 
         //ToDo refactor
-        private async void HandleMessage(LogMessage message)
+        private async void HandleMessage(WriteOffRequest request)
         {
-            _writer.AddMessage(message);
-            //_customerNameUpdateService.UpdateCustomerNameInOrders(updateCustomerFullNameModel);
+            _worker.HandleRequest(request);
         }
 
         private void OnConsumerCancelled(object sender, ConsumerEventArgs e)

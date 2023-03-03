@@ -7,7 +7,7 @@ namespace LogService.Services
     {
         private LogRepository logRepository = new LogRepository();
 
-        public void AddMessage(LogMessageControllers message)
+        public void AddMessage(LogMessage message)
         {
             logRepository.WriteMessage(message);
         }

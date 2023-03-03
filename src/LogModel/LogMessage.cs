@@ -3,20 +3,20 @@ using MongoDB.Bson;
 
 namespace LogModel
 {
-    public class LogMessageControllers : LogMessageBase
+    public class LogMessage : LogMessageBase
     {
-        public LogMessageControllers()
+        public LogMessage()
         {
 
         }
 
-        public LogMessageControllers(string message)
+        public LogMessage(string message)
         {
             this.Message = message;
             this.tag = LogMessageTag.other;
         }
 
-        public LogMessageControllers(string message, string tag) 
+        public LogMessage(string message, string tag) 
         {
             this.Message = message;
             this.tag = tag;      

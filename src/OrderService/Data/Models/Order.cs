@@ -10,17 +10,19 @@ namespace OrderService.Data.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+        public int OrderNumber { get; set; }
         public string UserOwner { get; set; }
         public List<Position> Positions { get; set; }
         public double Cost { get; set; }
-        public Status Status { get; set; }
+        public string Status { get; set; }
 
-        public Order(string userOwner, List<Position> positions)
+        public Order(string userOwner, int orderNumber, List<Position> positions)
         {
             UserOwner = userOwner;
             Positions = positions;
+            OrderNumber = orderNumber;
             Cost = CalculateOrderCost(positions);
-            Status = Status.Unpaid;
+            Status = OrderStatus.Draft;
         }
 
         private double CalculateOrderCost(List<Position> positions)
@@ -32,15 +34,5 @@ namespace OrderService.Data.Models
             }
             return cost;
         }
-    }
-
-    public enum Status
-    {
-        Unpaid,
-        Paid,
-        Delivering,
-        Received,
-        Cancelled,
-        Closed
     }
 }

@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
 
-namespace OrderService.Communication.Sender
+namespace ProductManagementService.Communication
 {
-    public class LogOrderSender : ILogSender
+    public class LogProductManagementSender : ILogSender
     {
         private readonly string _hostname;
         private readonly string _password;
@@ -14,7 +14,7 @@ namespace OrderService.Communication.Sender
         private readonly string _username;
         private IConnection _connection;
 
-        public LogOrderSender()
+        public LogProductManagementSender()
         {
             _queueName = "logs_que";
             _hostname = "rabbitmq";
@@ -26,7 +26,7 @@ namespace OrderService.Communication.Sender
 
         private LogMessage FormatMessage(LogMessage message)
         {
-            message.ServiceName = "OrderService";
+            message.ServiceName = "ProductManagementService";
             message.dateTime = DateTime.Now.AddHours(3);
             return message;
         }

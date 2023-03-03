@@ -1,4 +1,6 @@
-﻿using OrderService.Communication.Sender;
+﻿using CommunicationModel.ProductManagementRequest;
+using LogModel;
+using OrderService.Communication.Sender;
 using OrderService.Data;
 using OrderService.Data.Models;
 
@@ -7,29 +9,37 @@ namespace OrderService.Logic
     public class OrderWorker : IOrderWorker
     {
         private IOrderRepository _repository;
-        public OrderWorker(IOrderRepository repository)
+        private RmqSender _sender;
+        private ILogSender _logger;
+        public OrderWorker(IOrderRepository repository, ILogSender logger, RmqSender sender)
         {
             _repository = repository;
+            _logger = logger;
+            _sender = sender;
         }
 
         public async Task<Order> CreateOrder(string userOwner)
         {
-            //send grpc request to get list of products
-            Product firstTestProduct = new Product(1, "firstTestProduct", 123.00);
-            Product secondTestProduct = new Product(2, "secondTestProduct", 321.00);
-            List<Position> Positions = new List<Position>()
-            {
-                new Position(firstTestProduct, 3),
-                new Position(secondTestProduct, 2)
-            };
+            //получить состав корзины
+            List<Position> positions = new List<Position>();
+            var prosuct = new Product(1, "test", 12.00);
+            positions.Add(new Position(prosuct, 12));
 
-            List<Tuple<int, int>> message = new List<Tuple<int, int>>();
-            foreach (var position in Positions)
+            //создать заказ
+            var order = await _repository.CreateNewOrder(userOwner, positions);
+            _logger.SendMessage(new LogMessage("Created order number  = " + order.OrderNumber));
+            //отправить запрос на списывание
+            var request = new WriteOffRequest();
+            request.orderNumber = order.OrderNumber;
+
+            foreach (var position in positions)
             {
-                message.Add(new Tuple<int, int>(position.Product.Id, position.Amount));
+                request.positions.Add(position.Product.Id, position.Amount);
             }
 
-            return await _repository.CreateNewOrder(userOwner, Positions);
+            _sender.SendMessage(request);
+            _logger.SendMessage(new LogMessage("Message sended to order que"));
+            return order;
         }
 
         public async Task<Order> GetOrder(string userOwner)

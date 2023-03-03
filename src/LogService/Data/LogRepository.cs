@@ -16,9 +16,9 @@ namespace LogService.Data
             return db.GetCollection<T>(collection);
         }
 
-        public async Task WriteMessage(LogMessageControllers logMessage)
+        public async Task WriteMessage(LogMessage logMessage)
         {
-            await ConnectToMongo<LogMessageControllers>(collectionName).InsertOneAsync(logMessage);
+            await ConnectToMongo<LogMessage>(collectionName).InsertOneAsync(logMessage);
         }
 
         public async Task<List<LogMessageBase>> ReadMessagesByTag(string tag)
