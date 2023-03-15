@@ -7,5 +7,6 @@ namespace OrderService.Data
         public Task<Order> CreateNewOrder(string userOwner, List<Position> positions);
         public Task<Order> SaveChanges(Order order);
         public Task<Order> GetOrderByUser(string userName);
+        public Task<Order> GetOrderByNumber(int orderNumber);
     }
 }

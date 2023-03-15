@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CommunicationModel.ProductManagementRequest;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
 
@@ -22,7 +23,7 @@ namespace ProductManagementService.Communication
             CreateConnection();
         }
 
-        public void SendMessage(string message)
+        public void SendMessage(ProductManagementAnswer answer)
         {
             if (ConnectionExists())
             {
@@ -31,7 +32,7 @@ namespace ProductManagementService.Communication
                     channel.ExchangeDeclare(exchange: "retailstore_productmanagement", type: ExchangeType.Direct);
                     channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                    var json = JsonConvert.SerializeObject(message);
+                    var json = JsonConvert.SerializeObject(answer);
                     var body = Encoding.UTF8.GetBytes(json);
 
                     channel.BasicPublish(exchange: "retailstore_productmanagement", routingKey: "answer", basicProperties: null, body: body);

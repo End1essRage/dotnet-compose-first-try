@@ -19,6 +19,10 @@ namespace OrderService.Data
         {
             return await ConnectToMongo<Order>(collectionName).Find(c => c.UserOwner == userName).SingleAsync();
         }
+        public async Task<Order> GetOrderByNumber(int orderNumber)
+        {
+            return await ConnectToMongo<Order>(collectionName).Find(c => c.OrderNumber == orderNumber).SingleAsync();
+        }
 
         public async Task<Order> CreateNewOrder(string userOwner, List<Position> positions)
         {

@@ -18,13 +18,23 @@ namespace OrderService.Logic
             _sender = sender;
         }
 
+        public async Task ChangeOrderStatus(int orderNumber, string status)
+        {
+            var order = await _repository.GetOrderByNumber(orderNumber);
+            order.Status = status;
+            _repository.SaveChanges(order);
+        }
+
         public async Task<Order> CreateOrder(string userOwner)
         {
             //получить состав корзины
             List<Position> positions = new List<Position>();
-            var prosuct = new Product(1, "test", 12.00);
-            positions.Add(new Position(prosuct, 12));
-
+            var product1 = new Product(1, "test", 12.00);
+            var product2 = new Product(2, "test", 12.00);
+            var product3 = new Product(3, "test", 12.00);
+            positions.Add(new Position(product1, 7));
+            positions.Add(new Position(product2, 8));
+            positions.Add(new Position(product3, 3));
             //создать заказ
             var order = await _repository.CreateNewOrder(userOwner, positions);
             _logger.SendMessage(new LogMessage("Created order number  = " + order.OrderNumber));

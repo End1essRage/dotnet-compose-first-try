@@ -1,4 +1,5 @@
 using LogModel;
+using OrderService.Communication;
 using OrderService.Communication.Sender;
 using OrderService.Data;
 using OrderService.Logic;
@@ -15,6 +16,7 @@ namespace OrderService
             builder.Services.AddScoped<IOrderWorker, OrderWorker>();
             builder.Services.AddSingleton<ILogSender, LogOrderSender>();
             builder.Services.AddSingleton<RmqSender>();
+            builder.Services.AddHostedService<RmqReceiver>();
             // Add services to the container.
 
             builder.Services.AddControllers();

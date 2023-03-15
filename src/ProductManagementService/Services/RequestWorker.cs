@@ -21,7 +21,9 @@ namespace ProductManagementService.Services
         public bool HandleRequest(WriteOffRequest request) 
         {
             _logger.SendMessage(new LogMessage("RequestWorker - HandleRequest"));
-            _repository.tryToWriteOff(request);
+            bool status = !_repository.tryToWriteOff(request);
+            _logger.SendMessage(new LogMessage("writeoff status = " + status.ToString()));
+            _mqSender.SendMessage(new ProductManagementAnswer(request.orderNumber, status));
             return true;
         }
     }
