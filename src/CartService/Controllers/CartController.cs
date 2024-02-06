@@ -27,7 +27,7 @@ namespace CartService.Controllers
             return Ok(await _cartRepository.CreateCart(UserName));
         }
 
-        //ToDo refactor
+        //TODO refactor
         [Route("{UserName}")]
         [HttpGet]
         public async Task<ActionResult<Cart>> GetCartByUser(string UserName)
